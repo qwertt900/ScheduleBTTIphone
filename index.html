@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="manifest" href="manifest.json">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Расписание БТТ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ГЛАВНЫЙ ЭКРАН -->
+    <div id="screen-main" class="screen active">
+        <header class="header main-header">
+            <div class="header-top">
+                <img src="logo.png" alt="Логотип БТТ" class="logo-img">
+                <div>
+                    <div class="subtitle">ГБПОУ</div>
+                    <div class="title">Балахнинский технический техникум</div>
+                </div>
+            </div>
+            <h2>Расписание занятий</h2>
+            <p id="current-date-main">Загрузка...</p>
+        </header>
+
+        <div class="content">
+            <h3>ВЫБЕРИТЕ ВИД ПОИСКА</h3>
+            
+            <div class="card" onclick="showScreen('screen-groups')">
+                <div class="icon-box">🎓</div>
+                <div class="card-text">
+                    <h4>По группе</h4>
+                    <p>Найти расписание для учебной группы</p>
+                </div>
+                <div class="arrow">›</div>
+            </div>
+
+            <div class="card" onclick="showScreen('screen-teachers')">
+                <div class="icon-box">👨‍🏫</div>
+                <div class="card-text">
+                    <h4>По преподавателю</h4>
+                    <p>Найти расписание преподавателя</p>
+                </div>
+                <div class="arrow">›</div>
+            </div>
+            
+            <div class="stats-card">
+                <div class="stat"><span id="stats-groups">...</span><br>Групп</div>
+                <div class="divider"></div>
+                <div class="stat"><span id="stats-teachers">...</span><br>Преподавателей</div>
+                <div class="divider"></div>
+                <div class="stat"><span>2</span><br>Корпусов</div>
+            </div>
+            
+            <div class="last-update" id="last-update">Последнее обновление: --</div>
+            
+            <!-- Кнопка обновления данных на главном экране -->
+            <div style="text-align: center; margin-top: 15px;">
+                <button onclick="window.updateData()" style="background: #2E7D32; color: white; border: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; cursor: pointer;">↻ Обновить данные</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН ГРУПП -->
+    <div id="screen-groups" class="screen">
+        <header class="header">
+            <button class="btn-back" style="margin-bottom: 10px;" onclick="showScreen('screen-main')">‹</button>
+            <h2>Выбор группы</h2>
+            <p>Выберите учебную группу</p>
+        </header>
+        <div class="content">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="search-group" placeholder="Поиск группы..." onkeyup="filterList('group-list', this.value)">
+            </div>
+            <div id="group-list" class="grid-list"></div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН ПРЕПОДАВАТЕЛЕЙ -->
+    <div id="screen-teachers" class="screen">
+        <header class="header">
+            <button class="btn-back" style="margin-bottom: 10px;" onclick="showScreen('screen-main')">‹</button>
+            <h2>Выбор преподавателя</h2>
+            <p>Выберите преподавателя</p>
+        </header>
+        <div class="content">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="search-teacher" placeholder="Поиск преподавателя..." onkeyup="filterList('teacher-list', this.value)">
+            </div>
+            <ul id="teacher-list" class="list"></ul>
+        </div>
+    </div>
+
+    <!-- ЭКРАН РАСПИСАНИЯ -->
+    <div id="screen-schedule" class="screen">
+        <header class="header schedule-header">
+            <div class="schedule-top-bar">
+                <button class="btn-back" onclick="goBack()">‹</button>
+                
+                <div class="title-block" style="margin-left: 10px;">
+                    <div id="schedule-type" class="subtitle">Группа</div>
+                    <div id="schedule-name" class="title">ИС-11</div>
+                </div>
+
+                <!-- Кнопка избранного -->
+                <button id="favorite-btn" class="favorite-btn" onclick="toggleFavoriteForCurrent()" style="margin-left:auto;">☆</button>
+
+                <!-- Кнопка обновления расписания -->
+                <button class="btn-back" onclick="window.updateData()" style="margin-left:6px; font-size: 20px; border-color: transparent;">↻</button>
+            </div>
+            
+            <div class="week-nav">
+                <button class="btn-circle" onclick="changeWeek(-1)">‹</button>
+                <span id="week-range">26 окт. – 31 окт.</span>
+                <button class="btn-circle" onclick="changeWeek(1)">›</button>
+            </div>
+
+            <div class="days-container" id="days-container"></div>
+        </header>
+        <div class="content">
+            <div id="schedule-list"></div>
+        </div>
+    </div>
+
+    <!-- НИЖНЯЯ НАВИГАЦИЯ (ФИКСИРОВАННАЯ) -->
+    <nav class="bottom-nav" id="bottom-nav">
+        <div class="nav-item" onclick="showScreen('screen-main')">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-text">Главная</span>
+        </div>
+        <div class="nav-item" onclick="goToLastSchedule()">
+            <span class="nav-icon">📅</span>
+            <span class="nav-text">Расписание</span>
+        </div>
+        <div class="nav-item" onclick="showSettingsScreen()">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-text">Настройки</span>
+        </div>
+    </nav>
+
+    <!-- ЭКРАН НАСТРОЕК -->
+    <div id="screen-settings" class="screen">
+        <header class="header">
+            <button class="btn-back" style="margin-bottom: 10px;" onclick="showScreen('screen-main')">‹</button>
+            <h2>Настройки</h2>
+            <p>Тема оформления и избранное</p>
+        </header>
+        <div class="content">
+            <div class="settings-group">
+                <div class="settings-row">
+                    <div>
+                        <h4>🌙 Тёмная тема</h4>
+                        <p>Тёмное оформление приложения</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="theme-toggle" onchange="setTheme(this.checked ? 'dark' : 'light')">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <div class="settings-row" style="margin-bottom: 12px;">
+                    <div>
+                        <h4>⭐ Избранное</h4>
+                        <p>Быстрый доступ к нужному расписанию</p>
+                    </div>
+                </div>
+                <ul id="favorites-list" class="list"></ul>
+            </div>
+
+            <div class="last-update">Расписание БТТ · Версия 1.0.7</div>
+        </div>
+    </div>
+
+    <!-- Кнопка установки приложения -->
+    <button id="install-btn" class="install-btn" style="display: none;">
+        ⬇️ Установить приложение
+    </button>
+    
+    <div id="loader" class="loader-overlay"><div class="spinner"></div></div>
+    
+    <!-- Версия приложения -->
+    <div style="text-align: center; font-size: 12px; color: #888; padding: 10px; padding-bottom: 80px;">
+        Версия приложения: <span style="font-weight: bold;">1.0.8</span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
