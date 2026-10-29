@@ -115,7 +115,7 @@ h3 { font-size: 12px; color: var(--text-muted); letter-spacing: 1px; margin-bott
 /* Экран расписания */
 .schedule-header { padding-bottom: 16px; }
 .schedule-top-bar { display: flex; align-items: center; margin-bottom: 16px; margin-top: 10px; }
-.btn-back { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; background: transparent; color: white; font-size: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.btn-back { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; background: transparent; color: white; font-size: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .title-block { display: flex; flex-direction: column; }
 
 .week-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 0 8px; }
