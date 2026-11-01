@@ -67,7 +67,7 @@ body { background-color: var(--bg); color: var(--text); transition: background-c
 }
 [data-theme="dark"] .header { background-color: #1B5E20; }
 .header-top { display: flex; align-items: center; margin-bottom: 16px; }
-.logo-img { width: 52px; height: 52px; margin-right: 12px; object-fit: contain; border-radius: 8px; background-color: white; padding: 2px; }
+.logo-img { width: 52px; height: 52px; margin-right: 12px; object-fit: contain; border-radius: 8px; background-color: #2E7D32; padding: 2px; }
 .subtitle { font-size: 13px; color: var(--accent-light); }
 .title { font-size: 16px; font-weight: bold; }
 .header h2 { font-size: 20px; font-weight: bold; margin-top: 8px; }
